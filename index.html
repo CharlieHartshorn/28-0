@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>28-0 | Ryder Cup Draft Game</title>
+  <style>
+    :root {
+      --bg: #07130f;
+      --panel: #10251d;
+      --panel2: #153529;
+      --gold: #d7b56d;
+      --white: #f7f4eb;
+      --muted: #b9c7bd;
+      --red: #d94d4d;
+      --blue: #4078ff;
+      --green: #30c27c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #123826 0, var(--bg) 45%);
+      color: var(--white);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header { text-align: center; margin-bottom: 24px; }
+    h1 { font-size: clamp(48px, 9vw, 108px); margin: 10px 0 0; line-height: .85; letter-spacing: -6px; }
+    h2 { margin: 0 0 12px; }
+    .tag { color: var(--gold); font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+    .sub { color: var(--muted); font-size: 18px; max-width: 720px; margin: 14px auto; }
+    .card {
+      background: linear-gradient(145deg, rgba(21,53,41,.96), rgba(12,28,22,.96));
+      border: 1px solid rgba(215,181,109,.25);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      margin-bottom: 18px;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    button, select {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    button { cursor: pointer; background: var(--gold); color: #122017; }
+    button.secondary { background: #244538; color: var(--white); border: 1px solid rgba(255,255,255,.12); }
+    button.danger { background: var(--red); color: white; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    select { width: 100%; background: #0b1e17; color: var(--white); border: 1px solid rgba(255,255,255,.12); }
+    .hidden { display: none; }
+    .current { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; align-items: stretch; }
+    @media (max-width: 800px) { .current { grid-template-columns: 1fr; } }
+    .player-card {
+      background: linear-gradient(160deg, #f7f4eb, #d9c892);
+      color: #132017;
+      border-radius: 22px;
+      padding: 22px;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+    .player-card:after {
+      content: "28-0";
+      position: absolute;
+      right: -10px;
+      bottom: -12px;
+      font-size: 76px;
+      font-weight: 1000;
+      opacity: .12;
+    }
+    .year { color: #6e5620; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
+    .name { font-size: 38px; font-weight: 1000; margin: 8px 0; line-height: 1; }
+    .meta { font-weight: 800; color: #345040; }
+    .stat { margin: 10px 0; }
+    .stat-row { display:flex; justify-content:space-between; font-weight:800; margin-bottom:4px; }
+    .bar { height: 9px; background: rgba(0,0,0,.12); border-radius: 99px; overflow:hidden; }
+    .bar span { display:block; height:100%; background:#163d2d; }
+    .pill { display:inline-block; padding: 7px 10px; border-radius: 999px; background: rgba(215,181,109,.16); color: var(--gold); font-weight: 900; margin: 4px 6px 4px 0; }
+    .team-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+    .mini { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 12px; }
+    .mini b { color: var(--gold); }
+    .scoreboard { display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 10px; text-align:center; }
+    .bigscore { font-size: 42px; font-weight: 1000; color: var(--gold); }
+    .match-row { display:flex; justify-content:space-between; gap:12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sharebox { background:#07130f; border:1px dashed rgba(215,181,109,.5); padding:16px; border-radius:16px; white-space: pre-line; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="tag">Ryder Cup Draft Game</div>
+      <h1>28-0</h1>
+      <p class="sub">Draft 12 legends from Ryder Cup history, use your rerolls wisely, then watch your team play foursomes, fourballs and singles.</p>
+    </header>
+
+    <section id="setup" class="card">
+      <h2>Start your draft</h2>
+      <div class="grid">
+        <div>
+          <p class="tag">Side</p>
+          <select id="side">
+            <option value="Europe">Europe 🇪🇺</option>
+            <option value="USA">USA 🇺🇸</option>
+          </select>
+        </div>
+        <div>
+          <p class="tag">Difficulty</p>
+          <select id="difficulty">
+            <option value="easy">Easy — 5 rerolls</option>
+            <option value="medium" selected>Medium — 3 rerolls</option>
+            <option value="hard">Hard — 1 reroll</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:end;"><button onclick="startGame()" style="width:100%">Start Draft</button></div>
+      </div>
+    </section>
+
+    <section id="draft" class="hidden">
+      <div class="card current">
+        <div>
+          <div class="tag" id="draftStatus">Pick 1 of 12</div>
+          <div id="playerCard" class="player-card"></div>
+        </div>
+        <div>
+          <h2>Draft controls</h2>
+          <p id="rerollText" class="sub" style="margin-left:0"></p>
+          <button onclick="acceptPlayer()" style="width:100%;margin-bottom:10px">Draft Player</button>
+          <button id="rerollBtn" onclick="rerollPlayer()" class="secondary" style="width:100%;margin-bottom:10px">Reroll</button>
+          <button onclick="resetGame()" class="danger" style="width:100%">Reset</button>
+          <div style="margin-top:16px">
+            <span class="pill" id="avgRating">Rating: 0</span>
+            <span class="pill" id="chemRating">Chemistry: 0</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Your squad</h2>
+        <div id="teamList" class="team-list"></div>
+      </div>
+    </section>
+
+    <section id="results" class="hidden card">
+      <h2>Simulated Ryder Cup</h2>
+      <div class="scoreboard">
+        <div class="mini"><div>Foursomes</div><div id="foursomes" class="bigscore"></div></div>
+        <div class="mini"><div>Fourballs</div><div id="fourballs" class="bigscore"></div></div>
+        <div class="mini"><div>Singles</div><div id="singles" class="bigscore"></div></div>
+        <div class="mini"><div>Final</div><div id="finalScore" class="bigscore"></div></div>
+      </div>
+      <h2 style="margin-top:24px">Pairings</h2>
+      <div id="pairings"></div>
+      <h2 style="margin-top:24px">Verdict</h2>
+      <div id="verdict" class="sharebox"></div>
+      <button onclick="copyShare()" style="margin-top:14px">Copy share text</button>
+      <button onclick="resetGame()" class="secondary" style="margin-top:14px">Play again</button>
+    </section>
+  </div>
+
+<script>
+const players = {
+  Europe: [
+    p('Seve Ballesteros', 'Spain', 1985, 89, 94, 99, 95, 100, 'GOAT'),
+    p('Jose Maria Olazabal', 'Spain', 1987, 82, 91, 96, 92, 97, 'Legend'),
+    p('Nick Faldo', 'England', 1995, 84, 98, 89, 88, 94, 'Legend'),
+    p('Colin Montgomerie', 'Scotland', 1997, 78, 92, 86, 91, 99, 'Match Play Monster'),
+    p('Ian Poulter', 'England', 2012, 80, 86, 90, 96, 100, 'Postman'),
+    p('Rory McIlroy', 'Northern Ireland', 2018, 99, 94, 86, 88, 91, 'Modern Star'),
+    p('Sergio Garcia', 'Spain', 2006, 91, 93, 87, 84, 97, 'Record Points'),
+    p('Luke Donald', 'England', 2006, 76, 93, 94, 95, 92, 'Precision'),
+    p('Lee Westwood', 'England', 2004, 89, 91, 82, 84, 90, 'Reliable'),
+    p('Padraig Harrington', 'Ireland', 2006, 84, 88, 95, 90, 88, 'Scrambler'),
+    p('Henrik Stenson', 'Sweden', 2016, 88, 98, 86, 90, 91, 'Ice Man'),
+    p('Justin Rose', 'England', 2014, 87, 94, 88, 92, 92, 'Gold Standard'),
+    p('Tommy Fleetwood', 'England', 2018, 86, 92, 89, 90, 93, 'Fleetwood Mac'),
+    p('Francesco Molinari', 'Italy', 2018, 82, 95, 88, 91, 96, 'Moliwood'),
+    p('Viktor Hovland', 'Norway', 2023, 93, 96, 84, 90, 91, 'Viking'),
+    p('Jon Rahm', 'Spain', 2023, 98, 94, 90, 91, 95, 'Bull'),
+    p('Bernhard Langer', 'Germany', 1991, 79, 91, 92, 94, 96, 'General'),
+    p('Paul McGinley', 'Ireland', 2002, 74, 85, 90, 91, 88, 'Captain Energy')
+  ],
+  USA: [
+    p('Tiger Woods', 'USA', 1999, 100, 100, 96, 94, 95, 'GOAT'),
+    p('Jack Nicklaus', 'USA', 1981, 94, 98, 94, 96, 97, 'Golden Bear'),
+    p('Arnold Palmer', 'USA', 1963, 93, 88, 91, 92, 96, 'The King'),
+    p('Phil Mickelson', 'USA', 2004, 92, 89, 99, 88, 90, 'Short Game Wizard'),
+    p('Payne Stewart', 'USA', 1999, 84, 90, 94, 95, 96, 'Heart'),
+    p('Jordan Spieth', 'USA', 2016, 83, 89, 95, 97, 94, 'Clutch'),
+    p('Patrick Reed', 'USA', 2016, 86, 88, 90, 94, 99, 'Captain America'),
+    p('Justin Thomas', 'USA', 2018, 91, 94, 90, 91, 94, 'Fire'),
+    p('Brooks Koepka', 'USA', 2021, 98, 91, 86, 88, 90, 'Major Hunter'),
+    p('Dustin Johnson', 'USA', 2021, 100, 92, 86, 89, 93, 'Power'),
+    p('Collin Morikawa', 'USA', 2021, 85, 100, 86, 89, 91, 'Iron Robot'),
+    p('Scottie Scheffler', 'USA', 2023, 94, 99, 89, 86, 91, 'World No.1'),
+    p('Bryson DeChambeau', 'USA', 2021, 100, 88, 82, 87, 88, 'Bomber'),
+    p('Xander Schauffele', 'USA', 2021, 90, 94, 90, 92, 93, 'No Weakness'),
+    p('Tony Finau', 'USA', 2018, 94, 90, 87, 88, 87, 'Smooth'),
+    p('Tom Watson', 'USA', 1983, 86, 94, 97, 95, 96, 'Legend'),
+    p('Hale Irwin', 'USA', 1979, 83, 90, 92, 93, 95, 'Veteran'),
+    p('Ben Crenshaw', 'USA', 1987, 75, 87, 94, 100, 93, 'Putter')
+  ]
+};
+
+const historicPairs = [
+  ['Seve Ballesteros','Jose Maria Olazabal'], ['Rory McIlroy','Tommy Fleetwood'], ['Francesco Molinari','Tommy Fleetwood'],
+  ['Jordan Spieth','Patrick Reed'], ['Tiger Woods','Phil Mickelson'], ['Justin Thomas','Jordan Spieth'], ['Dustin Johnson','Collin Morikawa']
+];
+let side, difficulty, rerolls, team, current, usedNames, shareText;
+function p(name,nation,year,driver,iron,shortGame,putting,matchPlay,type){ return {name,nation,year,driver,iron,shortGame,putting,matchPlay,type}; }
+function rating(x){ return Math.round(x.driver*.25 + x.iron*.25 + x.shortGame*.17 + x.putting*.18 + x.matchPlay*.15); }
+function startGame(){
+  side = document.getElementById('side').value;
+  difficulty = document.getElementById('difficulty').value;
+  rerolls = difficulty === 'easy' ? 5 : difficulty === 'medium' ? 3 : 1;
+  team = []; usedNames = new Set();
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('draft').classList.remove('hidden');
+  document.getElementById('results').classList.add('hidden');
+  drawPlayer(); render();
+}
+function drawPlayer(){
+  const pool = players[side].filter(x => !usedNames.has(x.name));
+  current = pool[Math.floor(Math.random()*pool.length)];
+}
+function acceptPlayer(){
+  team.push(current); usedNames.add(current.name);
+  if(team.length >= 12){ finishDraft(); return; }
+  drawPlayer(); render();
+}
+function rerollPlayer(){
+  if(rerolls <= 0) return;
+  rerolls--; drawPlayer(); render();
+}
+function render(){
+  document.getElementById('draftStatus').textContent = `Pick ${team.length+1} of 12 — ${side}`;
+  document.getElementById('rerollText').textContent = `${rerolls} reroll${rerolls===1?'':'s'} remaining`;
+  document.getElementById('rerollBtn').disabled = rerolls <= 0;
+  document.getElementById('playerCard').innerHTML = `
+    <div class="year">${current.year} ${side} • ${current.type}</div>
+    <div class="name">${current.name}</div>
+    <div class="meta">${current.nation} • Overall ${rating(current)}</div>
+    ${stat('Driver', current.driver)}${stat('Iron Play', current.iron)}${stat('Short Game', current.shortGame)}${stat('Putting', current.putting)}${stat('Match Play', current.matchPlay)}
+  `;
+  document.getElementById('teamList').innerHTML = team.map((x,i)=>`<div class="mini"><b>${i+1}. ${x.name}</b><br>${x.year} • ${x.nation} • ${rating(x)}</div>`).join('') || '<p class="sub">No players drafted yet.</p>';
+  document.getElementById('avgRating').textContent = `Rating: ${team.length ? Math.round(avg(team.map(rating))) : 0}`;
+  document.getElementById('chemRating').textContent = `Chemistry: ${team.length > 1 ? chemistry(team) : 0}`;
+}
+function stat(label, value){ return `<div class="stat"><div class="stat-row"><span>${label}</span><span>${value}</span></div><div class="bar"><span style="width:${value}%"></span></div></div>`; }
+function avg(a){ return a.reduce((s,x)=>s+x,0)/a.length; }
+function chemistry(squad){
+  let c = 70;
+  const nations = {}; squad.forEach(x => nations[x.nation]=(nations[x.nation]||0)+1);
+  c += Math.max(...Object.values(nations))*3;
+  const eraGroups = {}; squad.forEach(x => { const e = Math.floor(x.year/10)*10; eraGroups[e]=(eraGroups[e]||0)+1; });
+  c += Math.max(...Object.values(eraGroups))*2;
+  historicPairs.forEach(pair => { if(pair.every(n => squad.some(x=>x.name===n))) c += 7; });
+  return Math.min(100, Math.round(c));
+}
+function pairScore(a,b){
+  let s = (rating(a)+rating(b))/2;
+  if(a.nation === b.nation) s += 6;
+  if(Math.abs(a.year-b.year) <= 8) s += 4;
+  if(historicPairs.some(pair => pair.includes(a.name) && pair.includes(b.name))) s += 12;
+  return Math.round(Math.min(100,s));
+}
+function makePairs(squad){
+  const remaining = [...squad].sort((a,b)=>rating(b)-rating(a));
+  const pairs = [];
+  while(remaining.length >= 2){
+    const a = remaining.shift();
+    let bestIndex = 0, best = -1;
+    remaining.forEach((b,i)=>{ const ps = pairScore(a,b); if(ps > best){ best=ps; bestIndex=i; } });
+    const b = remaining.splice(bestIndex,1)[0];
+    pairs.push({a,b,score:pairScore(a,b)});
+  }
+  return pairs.sort((x,y)=>y.score-x.score);
+}
+function simPoints(score, holes){
+  const base = (score - 75) / 25;
+  let pts = 0;
+  for(let i=0;i<holes;i++){
+    const chance = Math.max(.18, Math.min(.82, .42 + base*.34 + (Math.random()-.5)*.16));
+    pts += Math.random() < chance ? 1 : 0;
+  }
+  return pts;
+}
+function finishDraft(){
+  document.getElementById('draft').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+  const pairs = makePairs(team);
+  const teamRating = Math.round(avg(team.map(rating)));
+  const chem = chemistry(team);
+  const power = Math.round(teamRating*.7 + chem*.3);
+  const foursomePts = Math.min(8, simPoints(avg(pairs.slice(0,4).map(x=>x.score)),8));
+  const fourballPts = Math.min(8, simPoints(avg(pairs.slice(0,4).map(x=>x.score))+2,8));
+  const singlesPts = Math.min(12, simPoints(power,12));
+  const total = foursomePts + fourballPts + singlesPts;
+  const opp = 28 - total;
+  document.getElementById('foursomes').textContent = `${foursomePts}- ${8-foursomePts}`;
+  document.getElementById('fourballs').textContent = `${fourballPts}- ${8-fourballPts}`;
+  document.getElementById('singles').textContent = `${singlesPts}- ${12-singlesPts}`;
+  document.getElementById('finalScore').textContent = `${total}-${opp}`;
+  document.getElementById('pairings').innerHTML = pairs.slice(0,6).map((x,i)=>`<div class="match-row"><div><b>Pair ${i+1}</b>: ${x.a.name} + ${x.b.name}</div><div>${x.score}</div></div>`).join('');
+  const level = total >= 24 ? 'LEGENDARY — 28-0 is alive.' : total >= 18 ? 'HISTORIC — this team would terrify anyone.' : total >= 14.5 ? 'WINNERS — they get it done.' : total >= 12 ? 'CLOSE — captaincy questions incoming.' : 'PAINFUL — back to the draft room.';
+  const best = [...team].sort((a,b)=>rating(b)-rating(a))[0];
+  shareText = `28-0 — ${side} Draft\nFinal Score: ${side} ${total} - ${opp}\nTeam Rating: ${teamRating}\nChemistry: ${chem}\nBest Pick: ${best.year} ${best.name}\nVerdict: ${level}`;
+  document.getElementById('verdict').textContent = shareText;
+}
+function copyShare(){ navigator.clipboard?.writeText(shareText); alert('Share text copied.'); }
+function resetGame(){
+  document.getElementById('setup').classList.remove('hidden');
+  document.getElementById('draft').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+}
+</script>
+</body>
+</html>
